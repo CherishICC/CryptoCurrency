@@ -5,12 +5,19 @@ const PubSub = require("./app/pubsub");
 const request = require("request");
 const TransacionPool = require("./wallet/transaction-pool");
 const Wallet = require("./wallet");
+const TransactionMiner = require("./app/transaction-miner");
 
 const app = express();
 const blockchain = new Blockchain();
 const wallet = new Wallet();
 const transactionpool = new TransacionPool();
 const pubsub = new PubSub({ blockchain, transactionpool });
+const transactionMiner = new TransactionMiner({
+  blockchain,
+  wallet,
+  transactionpool,
+  pubsub,
+});
 
 const DEFAULT_PORT = 3000;
 const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
@@ -57,6 +64,11 @@ app.get("/api/transaction-pool-map", (req, res) => {
   res.json(transactionpool.transactionMap);
 });
 
+app.get("/api/mine-transactions", (req, res) => {
+  transactionMiner.mineTransactions();
+  res.redirect('/api/blocks');
+});
+
 const syncWithRootState = () => {
   request(
     { url: `${ROOT_NODE_ADDRESS}/api/blocks` },
@@ -68,15 +80,20 @@ const syncWithRootState = () => {
       }
     }
   );
-  request({ url : `${ROOT_NODE_ADDRESS}/api/transaction-pool-map`}, ( error, response, body ) => {
-    if(!error && response.statusCode === 200){
-      const rootTransactionPoolMap = JSON.parse(body);
-      console.log('Replacing transaction pool map on sync with', rootTransactionPoolMap);
-      transactionpool.setMap(rootTransactionPoolMap);
+  request(
+    { url: `${ROOT_NODE_ADDRESS}/api/transaction-pool-map` },
+    (error, response, body) => {
+      if (!error && response.statusCode === 200) {
+        const rootTransactionPoolMap = JSON.parse(body);
+        console.log(
+          "Replacing transaction pool map on sync with",
+          rootTransactionPoolMap
+        );
+        transactionpool.setMap(rootTransactionPoolMap);
+      }
     }
-  });
+  );
 };
-
 
 let PEER_PORT;
 if (process.env.GENERATE_PEER_PORT === "true") {
