@@ -17,7 +17,7 @@ class App extends Component {
       <div className="App">
         <img className="logo" src={logo}></img>
         <br />
-        <div>Welcome!!!</div>
+        <div>Welcome to Cryptocurrency!!!</div>
         <br />
         <div>
           <Link to="/blocks">Blocks</Link>
@@ -30,8 +30,8 @@ class App extends Component {
         </div>
         <br />
         <div className="WalletInfo">
-          <div>Address : {address}</div>
-          <div>Balance : {balance}</div>
+          <div>Wallet Public Address : {address}</div>
+          <div>Wallet Balance : {balance}</div>
         </div>
       </div>
     );
