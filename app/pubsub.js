@@ -6,6 +6,7 @@ const CHANNELS = {
   TRANSACTION: "TRANSACTION",
 };
 
+// PubSub class
 class PubSub {
   constructor({ blockchain, transactionpool }) {
     this.blockchain = blockchain;
@@ -20,11 +21,13 @@ class PubSub {
     );
   }
 
+  // Receiving messages in the channel
   handleMessage(channel, message) {
     console.log(`Message Received. Channel: ${channel}. Message; ${message}`);
     const parsedMessage = JSON.parse(message);
 
     switch (channel) {
+      // Calling the replaceChain function on the incoming chain
       case CHANNELS.BLOCKCHAIN:
         this.blockchain.replaceChain(parsedMessage, true, () => {
           this.transactionpool.clearBlockChainTransactions({
@@ -32,6 +35,7 @@ class PubSub {
           });
         });
         break;
+      // Updating the transaction pool
       case CHANNELS.TRANSACTION:
         this.transactionpool.setTransaction(parsedMessage);
         break;
@@ -40,12 +44,14 @@ class PubSub {
     }
   }
 
+  // Subscribing to the channels
   subscribeToChannels() {
     Object.values(CHANNELS).forEach((channel) => {
       this.subscriber.subscribe(channel);
     });
   }
 
+  // Publishing a message in a channel
   publish({ channel, message }) {
     this.subscriber.unsubscribe(channel, () => {
       this.publisher.publish(channel, message, () => {
@@ -54,6 +60,7 @@ class PubSub {
     });
   }
 
+  // Broadcasting the new chain
   broadcastChain() {
     this.publish({
       channel: CHANNELS.BLOCKCHAIN,
@@ -61,6 +68,7 @@ class PubSub {
     });
   }
 
+  // Broadcasting the new transactions
   broadcastTransaction(transaction) {
     this.publish({
       channel: CHANNELS.TRANSACTION,
