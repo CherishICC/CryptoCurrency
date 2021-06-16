@@ -9,3 +9,16 @@ This project contains all the necessary modules for a cryptocurrency. Following 
 - Transaction Pool for a real-time list of incoming data
 - Full frontend React.js web application
 - A real-time connected peer-to-peer server with a pub/sub implementation
+
+## Project Setup
+```
+npm install
+```
+### Run Project
+```
+npm run dev
+```
+### Run Peer
+```
+npm run dev-peer
+```
