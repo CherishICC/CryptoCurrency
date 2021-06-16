@@ -10,7 +10,7 @@ class ConductTransaction extends Component {
     fetch(`${document.location.origin}/api/known-addresses`)
       .then((response) => response.json())
       .then((json) => this.setState({ knownAddresses: json }));
-  };
+  }
 
   updateRecipient = (event) => {
     this.setState({ recipient: event.target.value });
@@ -40,19 +40,17 @@ class ConductTransaction extends Component {
       <div className="ConductTransaction">
         <Link to="/">Home</Link>
         <h3>Conduct a transaction</h3>
-        <br/>
+        <br />
         <h4>Known Addresses</h4>
-        {
-          this.state.knownAddresses.map(knownAddress => {
-            return (
-              <div key={knownAddress}>
-                <div>{knownAddress}</div>
-                <br/>
-              </div>
-            )
-          })
-        }
-        <br/>
+        {this.state.knownAddresses.map((knownAddress) => {
+          return (
+            <div key={knownAddress}>
+              <div>{knownAddress}</div>
+              <br />
+            </div>
+          );
+        })}
+        <br />
         <FormGroup>
           <FormControl
             input="text"

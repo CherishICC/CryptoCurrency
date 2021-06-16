@@ -2,13 +2,19 @@ const uuid = require("uuid/v1");
 const { REWARD_INPUT, MINING_REWARD } = require("../config");
 const { verifySignature } = require("../util");
 
+// Transaction class
 class Transaction {
   constructor({ senderWallet, recipient, amount, outputMap, input }) {
     this.id = uuid();
-    this.outputMap = outputMap || this.createOutputMap({ senderWallet, recipient, amount });
-    this.input = input || this.createInput({ senderWallet, outputMap: this.outputMap });
+    this.outputMap =
+      outputMap || this.createOutputMap({ senderWallet, recipient, amount });
+    this.input =
+      input || this.createInput({ senderWallet, outputMap: this.outputMap });
   }
 
+  /* Creating the output map for the transaction.
+     The output map contains the list of recipients and their respective transaction amounts
+     and the balance of the senderwallet after sending the amount to each recipient */
   createOutputMap({ senderWallet, recipient, amount }) {
     const outputMap = {};
     outputMap[recipient] = amount;
@@ -16,6 +22,8 @@ class Transaction {
     return outputMap;
   }
 
+  /* Creating the input map for the transaction.
+     The input map contains the timestamp of the transaction, the balance of the sender wallet, public address of the sender wallet, and the signature of the sender */ 
   createInput({ senderWallet, outputMap }) {
     return {
       timestamp: Date.now(),
@@ -25,6 +33,7 @@ class Transaction {
     };
   }
 
+  // Checking transaction validity
   static validTransaction(transaction) {
     const {
       input: { address, amount, signature },
@@ -44,13 +53,15 @@ class Transaction {
     return true;
   }
 
-  static rewardTransaction({minerWallet}){
+  // Generating the reward transaction for mining
+  static rewardTransaction({ minerWallet }) {
     return new this({
-      input : REWARD_INPUT,
-      outputMap : { [minerWallet.publicKey] : MINING_REWARD},
-    })
+      input: REWARD_INPUT,
+      outputMap: { [minerWallet.publicKey]: MINING_REWARD },
+    });
   }
 
+  // Updating a transaction
   update({ senderWallet, recipient, amount }) {
     if (amount > this.outputMap[senderWallet.publicKey]) {
       throw new Error("Amount exceeds balance");

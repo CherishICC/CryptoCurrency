@@ -1,3 +1,5 @@
+// Test file for the Wallet class (index.js)
+
 const Wallet = require("./index");
 const Transaction = require("./transaction");
 const Blockchain = require("../blockchain");
@@ -73,15 +75,15 @@ describe("Wallet()", () => {
       });
     });
 
-    describe('and a chain is passed', () => {
-      it('calls the calculateBalance method', () => {
+    describe("and a chain is passed", () => {
+      it("calls the calculateBalance method", () => {
         const calculateBalanceMock = jest.fn();
         const originalcalculatebalance = Wallet.calculateBalance;
         Wallet.calculateBalance = calculateBalanceMock;
         wallet.createTransaction({
-          recipient : 'foo',
-          amount : 50,
-          chain : new Blockchain().chain
+          recipient: "foo",
+          amount: 50,
+          chain: new Blockchain().chain,
         });
         expect(calculateBalanceMock).toHaveBeenCalled();
         Wallet.calculateBalance = originalcalculatebalance;
@@ -133,38 +135,58 @@ describe("Wallet()", () => {
         );
       });
 
-      describe('and the wallet has made a transaction', () => {
+      describe("and the wallet has made a transaction", () => {
         let recentTransaction;
         beforeEach(() => {
           recentTransaction = wallet.createTransaction({
-            recipient : 'me-again',
-            amount : 40
+            recipient: "me-again",
+            amount: 40,
           });
 
-          blockchain.addBlock({data : [recentTransaction]});
+          blockchain.addBlock({ data: [recentTransaction] });
         });
-        it('returns the output amount of the recent transaction', () => {
-          expect(Wallet.calculateBalance({chain:blockchain.chain, address:wallet.publicKey})).toEqual(recentTransaction.outputMap[wallet.publicKey]);
+        it("returns the output amount of the recent transaction", () => {
+          expect(
+            Wallet.calculateBalance({
+              chain: blockchain.chain,
+              address: wallet.publicKey,
+            })
+          ).toEqual(recentTransaction.outputMap[wallet.publicKey]);
         });
 
-        describe('and there are outputs next to after the recent transaction', () => {
+        describe("and there are outputs next to after the recent transaction", () => {
           let sameBlockTransaction, nextBlockTransaction;
           beforeEach(() => {
             recentTransaction = wallet.createTransaction({
-              recipient : 'me-again-again',
-              amount : 50
+              recipient: "me-again-again",
+              amount: 50,
             });
-            sameBlockTransaction = Transaction.rewardTransaction({minerWallet : wallet});
-            blockchain.addBlock({data : [recentTransaction, sameBlockTransaction]});
-            nextBlockTransaction = new Wallet().createTransaction({recipient: wallet.publicKey, amount : 75});
-            blockchain.addBlock({data : [nextBlockTransaction]});              
+            sameBlockTransaction = Transaction.rewardTransaction({
+              minerWallet: wallet,
+            });
+            blockchain.addBlock({
+              data: [recentTransaction, sameBlockTransaction],
+            });
+            nextBlockTransaction = new Wallet().createTransaction({
+              recipient: wallet.publicKey,
+              amount: 75,
+            });
+            blockchain.addBlock({ data: [nextBlockTransaction] });
           });
-          it('includes the output amounts in the wallet balance', () => {
-            expect(Wallet.calculateBalance({chain: blockchain.chain, address : wallet.publicKey})).toEqual(recentTransaction.outputMap[wallet.publicKey] + nextBlockTransaction.outputMap[wallet.publicKey] + sameBlockTransaction.outputMap[wallet.publicKey]);
+          it("includes the output amounts in the wallet balance", () => {
+            expect(
+              Wallet.calculateBalance({
+                chain: blockchain.chain,
+                address: wallet.publicKey,
+              })
+            ).toEqual(
+              recentTransaction.outputMap[wallet.publicKey] +
+                nextBlockTransaction.outputMap[wallet.publicKey] +
+                sameBlockTransaction.outputMap[wallet.publicKey]
+            );
           });
         });
       });
     });
-     
   });
 });

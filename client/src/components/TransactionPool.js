@@ -11,30 +11,32 @@ class TransactionPool extends Component {
 
   fetchTransactionPoolMap = () => {
     fetch(`${document.location.origin}/api/transaction-pool-map`)
-      .then(response => response.json())
-      .then(json => this.setState({ transactionPoolMap: json }));
+      .then((response) => response.json())
+      .then((json) => this.setState({ transactionPoolMap: json }));
   };
 
   fetchMineTransactions = () => {
-      fetch(`${document.location.origin}/api/mine-transactions`)
-        .then(response => {
-            if(response.status === 200){
-                alert('success');
-                history.push('/blocks');
-            } else {
-                alert('Request unsuccessful');
-            }
-        })
-  }
+    fetch(`${document.location.origin}/api/mine-transactions`).then(
+      (response) => {
+        if (response.status === 200) {
+          alert("success");
+          history.push("/blocks");
+        } else {
+          alert("Request unsuccessful");
+        }
+      }
+    );
+  };
 
   componentDidMount() {
     this.fetchTransactionPoolMap();
     this.fetchTransactionPoolMapInterval = setInterval(
-        () => this.fetchTransactionPoolMap(), POLL_INTERVAL_MS
+      () => this.fetchTransactionPoolMap(),
+      POLL_INTERVAL_MS
     );
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     clearInterval(this.fetchTransactionPoolMapInterval);
   }
 
@@ -45,17 +47,15 @@ class TransactionPool extends Component {
           <Link to="/">Home</Link>
         </div>
         <h3>Transaction Pool</h3>
-        {
-            Object.values(this.state.transactionPoolMap).map(transaction => {
-                return (
-                    <div key={transaction.id}>
-                        <hr />
-                        <Transaction transaction={transaction}></Transaction>
-                    </div>
-                );
-            })
-        }
-        <hr/>
+        {Object.values(this.state.transactionPoolMap).map((transaction) => {
+          return (
+            <div key={transaction.id}>
+              <hr />
+              <Transaction transaction={transaction}></Transaction>
+            </div>
+          );
+        })}
+        <hr />
         <Button onClick={this.fetchMineTransactions}>Mine Transactions</Button>
       </div>
     );

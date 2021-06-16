@@ -1,3 +1,5 @@
+// Test file for the Transaction-pool class
+
 const TransactionPool = require("./transaction-pool");
 const Transaction = require("./transaction");
 const Wallet = require("./index");

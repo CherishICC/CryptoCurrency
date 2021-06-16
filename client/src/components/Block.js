@@ -21,14 +21,12 @@ class Block extends Component {
     if (this.state.displayTransaction) {
       return (
         <div>
-          {
-            data.map(transaction => (
-              <div key={transaction.id}>
-                <hr/>
-                <Transaction transaction={transaction}/>
-              </div>
-            ))
-          }
+          {data.map((transaction) => (
+            <div key={transaction.id}>
+              <hr />
+              <Transaction transaction={transaction} />
+            </div>
+          ))}
           <br />
           <Button
             bsStyle="danger"
@@ -44,7 +42,7 @@ class Block extends Component {
     return (
       <div>
         Data : {dataDisplay}
-        <br/>
+        <br />
         <Button
           bsStyle="danger"
           bsSize="small"

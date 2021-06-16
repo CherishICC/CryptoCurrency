@@ -1,3 +1,5 @@
+// Script to check the difficulty update
+
 const Blockchain = require("../blockchain");
 
 const blockchain = new Blockchain();

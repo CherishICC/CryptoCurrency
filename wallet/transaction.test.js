@@ -1,3 +1,5 @@
+// Test file for the Transaction class
+
 const Transaction = require("./transaction");
 const Wallet = require("./index");
 const { verifySignature } = require("../util");
@@ -179,8 +181,10 @@ describe("Transaction()", () => {
       expect(rewardTransaction.input).toEqual(REWARD_INPUT);
     });
 
-    it('creates one transaction for the miner with the mining reward', () => {
-      expect(rewardTransaction.outputMap[minerWallet.publicKey]).toEqual(MINING_REWARD);
+    it("creates one transaction for the miner with the mining reward", () => {
+      expect(rewardTransaction.outputMap[minerWallet.publicKey]).toEqual(
+        MINING_REWARD
+      );
     });
   });
 });

@@ -24,7 +24,7 @@ const DEFAULT_PORT = 3000;
 const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
 
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname,"client/dist")))
+app.use(express.static(path.join(__dirname, "client/dist")));
 
 app.get("/api/blocks", (req, res) => {
   res.json(blockchain.chain);
@@ -38,8 +38,8 @@ app.get("/api/blocks/:id", (req, res) => {
   const { id } = req.params;
   const { length } = blockchain.chain;
   const blocksReversed = blockchain.chain.slice().reverse();
-  let startIndex = (id-1)*5;
-  let endIndex = id*5;
+  let startIndex = (id - 1) * 5;
+  let endIndex = id * 5;
   startIndex = startIndex < length ? startIndex : length;
   endIndex = endIndex < length ? endIndex : length;
 
@@ -99,16 +99,15 @@ app.get("/api/wallet-info", (req, res) => {
       address: wallet.publicKey,
     }),
   });
-  
 });
 
 app.get("/api/known-addresses", (req, res) => {
   const addressMap = {};
-  for(let block of blockchain.chain){
-    for(let transaction of block.data){
+  for (let block of blockchain.chain) {
+    for (let transaction of block.data) {
       const recipients = Object.keys(transaction.outputMap);
 
-      recipients.forEach(recipient => addressMap[recipient] = recipient);
+      recipients.forEach((recipient) => (addressMap[recipient] = recipient));
     }
   }
 
@@ -116,7 +115,7 @@ app.get("/api/known-addresses", (req, res) => {
 });
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/dist/index.html'));
+  res.sendFile(path.join(__dirname, "client/dist/index.html"));
 });
 
 const syncWithRootState = () => {
@@ -145,33 +144,45 @@ const syncWithRootState = () => {
   );
 };
 
+// Development Code
 const walletOne = new Wallet();
 const walletTwo = new Wallet();
 
-const generateWalletTransaction = ({wallet, recipient, amount}) => {
+const generateWalletTransaction = ({ wallet, recipient, amount }) => {
   const transaction = wallet.createTransaction({
-    recipient, amount, chain: blockchain.chain
+    recipient,
+    amount,
+    chain: blockchain.chain,
   });
   transactionpool.setTransaction(transaction);
 };
 
-const walletAction = () => generateWalletTransaction({
-  wallet, recipient : walletOne.publicKey, amount : 5
-});
+const walletAction = () =>
+  generateWalletTransaction({
+    wallet,
+    recipient: walletOne.publicKey,
+    amount: 5,
+  });
 
-const walletOneAction = () => generateWalletTransaction({
-  wallet : walletOne, recipient : walletTwo.publicKey, amount : 10
-});
+const walletOneAction = () =>
+  generateWalletTransaction({
+    wallet: walletOne,
+    recipient: walletTwo.publicKey,
+    amount: 10,
+  });
 
-const walletTwoAction = () => generateWalletTransaction({
-  wallet : walletTwo, recipient : wallet.publicKey, amount : 15
-});
+const walletTwoAction = () =>
+  generateWalletTransaction({
+    wallet: walletTwo,
+    recipient: wallet.publicKey,
+    amount: 15,
+  });
 
-for(let i=0;i<20;i++){
-  if(i%3===0){
+for (let i = 0; i < 20; i++) {
+  if (i % 3 === 0) {
     walletAction();
     walletOneAction();
-  } else if(i%3 === 1){
+  } else if (i % 3 === 1) {
     walletAction();
     walletTwoAction();
   } else {

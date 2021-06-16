@@ -1,3 +1,5 @@
+// Test file for the Blockchain class (index.js)
+
 const Blockchain = require("./index");
 const Block = require("./block");
 const { cryptoHash } = require("../util");
@@ -150,11 +152,11 @@ describe("blockchain()", () => {
       });
     });
 
-    describe('and the validateTransactions flag is true', () => {
-      it('calls the validTransactionData()', () => {
+    describe("and the validateTransactions flag is true", () => {
+      it("calls the validTransactionData()", () => {
         const validMock = jest.fn();
         blockchain.validTransactionData = validMock;
-        newChain.addBlock({data : 'hello'});
+        newChain.addBlock({ data: "hello" });
         blockchain.replaceChain(newChain.chain, true);
         expect(validMock).toHaveBeenCalled();
       });

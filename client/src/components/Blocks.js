@@ -28,18 +28,21 @@ class Blocks extends Component {
         </div>
         <h3>Blocks</h3>
         <div>
-          {
-            [...Array(Math.ceil(this.state.blocksLength/5)).keys()].map(key => {
+          {[...Array(Math.ceil(this.state.blocksLength / 5)).keys()].map(
+            (key) => {
               const paginatedid = key + 1;
-              return(
-                <span key={key} onClick={this.fetchPaginatedBlocks(paginatedid)}>
+              return (
+                <span
+                  key={key}
+                  onClick={this.fetchPaginatedBlocks(paginatedid)}
+                >
                   <Button bsSize="small" bsStyle="danger">
                     {paginatedid}
-                  </Button>{' '}
+                  </Button>{" "}
                 </span>
-              )
-            })
-          }
+              );
+            }
+          )}
         </div>
         {this.state.blocks.map((block) => {
           return <Block key={block.hash} block={block} />;
